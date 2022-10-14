@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  try_sqlc_postgresql:
+    container_name: try_sqlc_postgresql
+    image: "postgres"
+    restart: "always"
+    ports: 
+      - "5432:5432"
+    environment:
+      - TZ=Asia/Jakarta
+      - POSTGRES_USER=usertry
+      - POSTGRES_PASSWORD=pwdpwd
+      - POSTGRES_DB=library
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=localhost
+    volumes:
+      - try_sqlc_db_data:/var/lib/postgresql/data/
+    networks:
+      - try_sqlc_network
+  try_sqlc_goose_migration_up:
+    container_name: try_sqlc_goose_migration_up
+    build:
+      context: .
+      dockerfile: Dockerfile.goose
+      args:
+        - DBHOST=try_sqlc_postgresql
+        - DBUSER=usertry
+        - DBPASSWORD=pwdpwd
+        - DBNAME=library
+    volumes:
+      - ./migrations:/migrations
+    networks:
+      - try_sqlc_network
+    depends_on:
+      - try_sqlc_postgresql
+
+volumes:
+  try_sqlc_db_data:
+    name: try_sqlc_db_data
+
+networks:
+  try_sqlc_network:
+    name: try_sqlc_network

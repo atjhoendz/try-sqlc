@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query.sql"
+    schema: "migrations/20221012234140_create_table_books.sql"
+    gen:
+      go:
+        package: "trysqlc"
+        out: "trysqlc"
